@@ -1,8 +1,8 @@
-# -Multiplayer-Online-Game-Matchmaking-System
+# -Online-Game-Matchmaking-System
 
 **Problem Statement**
 
-In the realm of multiplayer online games, matchmaking is a critical component that significantly affects player experience. A matchmaking system pairs players together in game sessions based on various factors such as skill level, game mode preferences, and geographic location to ensure fair and enjoyable gameplay. The objective of this project is to design and implement a comprehensive database system that manages player profiles, matchmaking processes, game sessions, and player statistics for a multiplayer online game.
+In the realm of online games, matchmaking is a critical component that significantly affects player experience. A matchmaking system pairs players together in game sessions based on various factors such as skill level, game mode preferences, and geographic location to ensure fair and enjoyable gameplay. The objective of this project is to design and implement a comprehensive database system that manages player profiles, matchmaking processes, game sessions, and player statistics for a online game.
 
 **Project Overview**
 
