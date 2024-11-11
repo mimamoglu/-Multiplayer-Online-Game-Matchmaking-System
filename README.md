@@ -125,5 +125,3 @@ Bu kararlar, hem oyuncu deneyimini iyileştirmek hem de sistemin sürdürülebil
 - **GAMEMODES - GAMESESSION**: Her oyun oturumu belirli bir modda oynanır (1:1)
 
 --- 
-
-This markdown format is optimized for GitHub, making your document more readable while preserving its original content and structure.
