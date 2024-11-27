@@ -1,128 +1,171 @@
 ![image](https://github.com/user-attachments/assets/e1c04020-5a03-4229-97a7-02cc8352323c)
 
-# Tanım
+# Matchmaking System Database Design
 
-**Çevrimiçi oyunlarda eşleştirme**, oyuncu deneyimini büyük ölçüde etkileyen kritik bir unsurdur. Oyuncuları adil ve keyifli bir oyun ortamında bir araya getirmek için eşleştirme sistemlerimizi, **beceri seviyeleri**, **oyun modu tercihleri** ve **coğrafi konum** gibi faktörleri göz önünde bulundurarak tasarlıyoruz. Bu projede amacımız, oyuncu profillerini, eşleştirme süreçlerini, oyun oturumlarını ve oyuncu istatistiklerini yöneten kapsamlı ve verimli bir veritabanı sistemi geliştirmektir.
+## Overview
+**Matchmaking** is a critical component of online games, significantly impacting the player experience. Our system is designed to create fair and enjoyable matches by considering factors such as **skill levels**, **game mode preferences**, and **geographic locations**. 
 
-Projede, oyuncular, eşleştirme kuyruğu, oyun oturumları ve istatistiklerle ilgili verileri etkin bir şekilde depolayan ve yöneten bir **veritabanı şeması** oluşturuyoruz. Veritabanı tasarımımız, oyuncu profillerini, oyun modlarını, sunucuları ve eşleştirme süreçlerini kapsayan ana varlıkları ve bunlar arasındaki ilişkileri içerir. **Oyuncuların performans verileri**, **oyun modları**, **sunucuların durumu** ve **bölgesel bağlantılar** gibi temel bilgileri veritabanında etkili bir şekilde organize ederek, oyuncuların doğru eşleştirilmesini sağlıyoruz. Bu yapı, oyun içi süreçlerin verimli bir şekilde yönetilmesine de olanak tanır.
+The goal of this project is to develop a comprehensive and efficient **database system** to manage:
+- Player profiles
+- Matchmaking processes
+- Game sessions
+- Player statistics
 
----
-
-## Tasarım Kararları
-
-Bu veritabanı tasarımında alınan kararlar, sistemin işlevselliğini ve performansını en üst düzeye çıkarmayı hedeflemiştir.
-
-- Öncelikle, **oyuncu verilerinin**, **oyun modlarının** ve **eşleştirme süreçlerinin** ayrıntılı olarak izlenebilmesi için her varlık ayrı bir tabloya bölünmüştür. Bu sayede, her bir veri parçası kendi bağlamında yönetilebilir ve analiz edilebilir hale getirilmiştir.
-- **Foreign key ilişkileri** kullanılarak tablolar arasında güçlü bağlantılar kurulmuş ve veri bütünlüğü sağlanmıştır.
-- **İndeksleme**, hızlı veri erişimini sağlamak için uygulanmış, böylece yüksek yoğunluklu oyun sistemlerinde bile hızlı sorgu performansı elde edilmiştir.
-- Ayrıca, **zaman serisi verileri** ve **coğrafi veri özellikleri**, oyuncu davranışlarının ve sunucu performansının daha iyi analiz edilmesi için veritabanına entegre edilmiştir.
-
-Bu kararlar, hem oyuncu deneyimini iyileştirmek hem de sistemin sürdürülebilirliğini ve ölçeklenebilirliğini sağlamak amacıyla verilmiştir.
+The database schema includes core entities like players, game modes, servers, and matchmaking queues, ensuring effective organization and seamless operation.
 
 ---
 
-## Varlıklar ve Tablo Yapısı
+## Design Decisions
+The following design decisions were made to optimize functionality and performance:
 
-### PLAYER
-- **PlayerID**: Her oyuncunun benzersiz kimliği
-- **Username**: Oyuncunun oyun içindeki kullanıcı adı
-- **SkillRating**: Oyuncunun beceri derecesi, eşleştirme için önemlidir
-- **GamesPlayed**: Toplam oynanan oyun sayısı, oyuncunun tecrübesini gösterir
-- **WinRate**: Kazanma oranı, oyuncunun performansını ölçer
-- **RegionID**: Oyuncunun kayıtlı olduğu veya oynadığı bölge, REGION tablosuyla ilişkilidir
-
-**Açıklama**: `PLAYER` tablosu, oyuncuların profillerini ve performans verilerini içerir. Oyuncu istatistikleri, eşleştirme algoritmalarını destekler.
+1. **Entity Separation**: Each major entity (e.g., players, servers, game modes) is stored in a separate table to ensure clear organization and easy management.
+2. **Relational Integrity**: Strong foreign key relationships enforce data consistency across tables.
+3. **Scalability**: The schema supports large-scale operations and can handle increased player and game session data efficiently.
 
 ---
 
-### REGION
-- **RegionID**: Her bölgenin benzersiz kimliği
-- **RegionName**: Bölgenin adı
-- **ServerID**: Bölgedeki sunucularla ilişki, SERVERS tablosuna bağlıdır
+## Database Schema
+### 1. **PLAYER**
+Stores player information and statistics.
+- **Columns**:
+  - `PlayerID (PK)`: Unique identifier for each player.
+  - `Username`: Player's in-game username.
+  - `SkillRating`: Player's skill level, calculated as:
+    ```
+    SkillRating = (Total Points Earned / Games Played) * 10
+    ```
+  - `GamesPlayed`: Total number of games played.
+  - `WinRate`: Player's win rate (performance measure).
+  - `ServerIP (FK)`: Foreign key linking to the `SERVER` table.
 
-**Açıklama**: `REGION` tablosu, oyun sunucularının bulunduğu bölgeleri tanımlar ve oyuncuların uygun sunuculara yönlendirilmesini sağlar.
-
----
-
-### SERVERS
-- **ServerID**: Sunucunun benzersiz kimliği
-- **ServerIP**: Sunucunun IP adresi
-- **Status**: Sunucunun durumu (örneğin, aktif, bakımda)
-
-**Açıklama**: `SERVERS` tablosu, sunucuların IP bilgilerini ve durumlarını kaydeder. Sunucu durumu, oyun hizmetinin sürekliliği için kritik öneme sahiptir.
-
----
-
-### GAMEMODES
-- **GameModelID**: Oyun modunun benzersiz kimliği
-- **ModeName**: Oyun modunun adı (örneğin, Solo, Takım)
-- **MaxPlayers**: Moddaki maksimum oyuncu sayısı
-
-**Açıklama**: `GAMEMODES` tablosu, oyunun farklı oynanış modlarını tanımlar. Her mod, oyuncu sayısını ve oyun kurallarını belirler.
+- **Notes**:
+  - Tracks player profiles, performance metrics, and associated server information.
+  - Statistics aid in matchmaking algorithms.
 
 ---
 
-### GAMESESSION
-- **SessionID**: Oyun oturumunun benzersiz kimliği
-- **StartTime**: Oyun oturumunun başlama zamanı
-- **EndTime**: Oyun oturumunun bitiş zamanı
-- **GameModelID**: Oyun modunun kimliği, GAMEMODES tablosuna bağlıdır
-- **RegionID**: Oyun oturumunun oynandığı bölge, REGION tablosuyla ilişkilidir
-- **SessionStatus**: Oyun oturumunun durumu
-
-**Açıklama**: `GAMESESSION` tablosu, her bir oyun oturumunun detaylarını içerir. Oyun süreçlerini analiz etmeye olanak tanır.
+### 2. **REGION**
+Defines regions where servers are located.
+- **Columns**:
+  - `RegionID (PK)`: Unique identifier for each region.
+  - `RegionName`: Name of the region.
 
 ---
 
-### SESSIONPARTICIPANT
-- **SessionID**: Katıldığı oyun oturumunun kimliği, GAMESESSION tablosuyla ilişkilidir
-- **PlayerID**: Katılımcı oyuncunun kimliği, PLAYER tablosuna bağlıdır
+### 3. **SERVER**
+Stores server information and statuses.
+- **Columns**:
+  - `ServerIP (PK)`: Unique server identifier.
+  - `Status`: Server status (e.g., Active, Maintenance).
+  - `RegionID (FK)`: Foreign key linking to the `REGION` table.
 
-**Açıklama**: `SESSIONPARTICIPANT` tablosu, oyuncuların hangi oyun oturumlarına katıldığını ve performanslarını kaydeder.
-
----
-
-### MATCHMAKINGQUEUE
-- **QueueID**: Kuyruğun benzersiz kimliği
-- **PlayerID**: Kuyruğa katılan oyuncunun kimliği, PLAYER tablosuna bağlıdır
-- **PreferredGameMode**: Oyuncunun tercih ettiği oyun modu
-- **JoinTime**: Kuyruğa katılma zamanı
-- **Status**: Eşleştirme kuyruğundaki durum
-
-**Açıklama**: `MATCHMAKINGQUEUE` tablosu, oyuncuların eşleştirme sırasındaki durumunu kaydeder ve uygun oyun oturumlarına yönlendirilmesini sağlar.
+- **Notes**:
+  - Tracks server health and availability for matchmaking.
 
 ---
 
-### RANKING
-- **RankingID**: Sıralama kaydının benzersiz kimliği
-- **PlayerID**: Oyuncunun kimliği, PLAYER tablosuna bağlıdır
-- **RankLevel**: Oyuncunun sıralama seviyesi
-- **Points**: Oyuncunun kazandığı puanlar
-- **LastUpdated**: Sıralamanın güncellendiği tarih
-
-**Açıklama**: `RANKING` tablosu, oyuncuların seviye ve puanlarını izler. Performans sıralamaları için kullanılır.
+### 4. **GAMEMODE**
+Defines various game modes.
+- **Columns**:
+  - `GameModeID (PK)`: Unique identifier for the game mode.
+  - `ModeName`: Name of the game mode (e.g., Solo, Team).
+  - `MaxPlayers`: Maximum players allowed in the mode.
 
 ---
 
-### BLACKLIST
-- **BlacklistID**: Kara liste kaydının benzersiz kimliği
-- **PlayerID**: Kara listeye alınan oyuncunun kimliği, PLAYER tablosuna bağlıdır
-- **ReportCount**: Oyuncunun aldığı rapor sayısı
-- **LastReportDate**: En son raporun tarihi
-- **SuspiciousActivityScore**: Oyuncunun şüpheli etkinlik puanı
+### 5. **GAMESESSION**
+Tracks details of each game session.
+- **Columns**:
+  - `GameSessionID (PK)`: Unique identifier for the session.
+  - `StartTime`: Start time of the game session.
+  - `EndTime`: End time of the game session.
+  - `GameModeID (FK)`: Foreign key linking to the `GAMEMODE` table.
+  - `RegionID (FK)`: Foreign key linking to the `REGION` table.
+  - `SessionStatus`: Current status of the session.
 
-**Açıklama**: `BLACKLIST` tablosu, oyuncuların şüpheli etkinliklerini ve rapor geçmişini kaydeder. Oyunun güvenliğini sağlamak için kullanılır.
+- **Notes**:
+  - Stores up to the last **10 game sessions** per player. When a new session starts, the oldest record is deleted.
 
 ---
 
-## Tablolar Arası İlişkiler
+### 6. **SESSIONPARTICIPANT**
+Links players to game sessions.
+- **Columns**:
+  - `SessionID (PK)`: Unique identifier for the session.
+  - `MatchID`: Match identifier.
+  - `PlayerID (FK)`: Foreign key linking to the `PLAYER` table.
 
-- **PLAYER - REGION**: Oyuncular, belirli bir bölgede oynar (1:N)
-- **PLAYER - MATCHMAKINGQUEUE**: Oyuncular, eşleştirme kuyruğuna katılabilir (1:N)
-- **PLAYER - RANKING**: Oyuncuların sıralama seviyeleri kayıtlıdır (1:1)
-- **PLAYER - BLACKLIST**: Şüpheli davranışlar kara listeye eklenir (1:1)
-- **GAMESESSION - SESSIONPARTICIPANT**: Oyun oturumları birden fazla katılımcıya sahiptir (1:N)
-- **REGION - SERVERS**: Bölgeler, birçok sunucuya sahip olabilir (1:N)
-- **GAMEMODES - GAMESESSION**: Her oyun oturumu belirli bir modda oynanır (1:1)
+- **Notes**:
+  - Acts as a junction table connecting `PLAYER` and `GAMESESSION`.
+  - Tracks session-specific player details.
 
---- 
+---
+
+### 7. **MATCHMAKINGQUEUE**
+Manages matchmaking queues.
+- **Columns**:
+  - `QueueID (PK)`: Unique queue identifier.
+  - `PlayerID (FK)`: Foreign key linking to the `PLAYER` table.
+  - `PreferredGameModeID (FK)`: Foreign key linking to the `GAMEMODE` table.
+  - `JoinTime`: Time when the player joined the queue.
+  - `Status`: Current status of the queue.
+
+---
+
+### 8. **RANKING**
+Tracks player ranks and points.
+- **Columns**:
+  - `RankingID (PK)`: Unique ranking identifier.
+  - `PlayerID (FK)`: Foreign key linking to the `PLAYER` table.
+  - `RankLevel`: Player's rank (e.g., Bronze, Gold).
+  - `Points`: Points earned by the player.
+  - `LastUpdated`: Last updated timestamp.
+
+- **Notes**:
+  - Rank levels:
+    - Bronze: 500–750 points
+    - Gold: 750–1000 points
+
+---
+
+### 9. **BLACKLIST**
+Tracks reported and flagged players.
+- **Columns**:
+  - `BlacklistID (PK)`: Unique blacklist identifier.
+  - `PlayerID (FK)`: Foreign key linking to the `PLAYER` table.
+  - `ReportCount`: Number of reports against the player.
+  - `LastReportDate`: Date of the most recent report.
+  - `SuspiciousActivityScore`: Score indicating suspicious activity.
+
+- **Notes**:
+  - Blacklist checks occur every **5 matches** to optimize performance.
+  - Players with a `SuspiciousActivityScore` ≥ 100 are permanently removed from the database.
+
+---
+
+## Entity Relationships
+- **PLAYER → SERVER**: A player is connected to a server (1:1).
+- **SERVER → REGION**: A server belongs to one region, but a region can host multiple servers (1:N).
+- **PLAYER → MATCHMAKINGQUEUE**: Players enter a matchmaking queue to join a game (1:1).
+- **GAMEMODE → MATCHMAKINGQUEUE**: Multiple players can queue for the same game mode (1:N).
+- **PLAYER → RANKING**: Each player has one rank record (1:1).
+- **PLAYER → BLACKLIST**: Each player has a blacklist record, even if they are not flagged (1:1).
+- **SESSIONPARTICIPANT → GAMESESSION**: Connects players to game sessions (N:1).
+
+---
+
+## Performance Optimization
+1. **Blacklist Checks**: Conducted every **5 matches** to reduce system load while maintaining security.
+2. **Session Limits**: Stores only the **last 10 sessions** per player to manage data efficiently.
+3. **Skill Rating Formula**: Simplified calculation to ensure real-time updates during matchmaking.
+
+---
+
+## Deletion Policy
+- Players with `SuspiciousActivityScore` ≥ 100:
+  - All records linked to their `PlayerID` are deleted across all tables.
+
+---
+
+This schema ensures a scalable, efficient, and fair matchmaking system that enhances the overall player experience.
+
