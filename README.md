@@ -125,3 +125,5 @@ Eğer bir oyuncunun SuspiciousActivityScore değeri 100 veya daha fazla olursa, 
 
 - **SESSIONPARTICIPANT -> Player**: SESSIONPARTICIPANT tablosunda, bir oyuncunun en fazla 10 adet olmak üzere session bilgisi bulunabilir. Yani, aynı oyuncuya ait birden fazla SESSIONPARTICIPANT satırı olabilir ve bu satırlar o oyuncuya eşleşir.(N:1)
 - **SESSIONPARTICIPANT -> GAMESESSION**: Her bir oyuncu, oynadığı oyunun ID’sini ve PlayerID’sini benzersiz bir şekilde tanımlayan bir SessionID’ye sahiptir. Bu SessionID, aynı zamanda GAMESESSION tablosuyla ilişkilidir.(1:1)
+![Screenshot 2024-11-28 123436](https://github.com/user-attachments/assets/468a3b99-3471-4cc3-9213-6b3290ba2a4c)
+![Screenshot 2024-11-28 123502](https://github.com/user-attachments/assets/fc3b2697-e59f-4d05-b795-ffabe8f6b26d)
