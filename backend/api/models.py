@@ -1,3 +1,10 @@
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 import uuid
 
@@ -17,7 +24,7 @@ class Blacklist(models.Model):
 
 
 class Gamemode(models.Model):
-    gamemodelid = models.CharField(primary_key=True, max_length=30)
+    gamemodelid = models.CharField(primary_key=True, max_length=10)
     modename = models.CharField(max_length=50)
     maxplayers = models.IntegerField()
 
@@ -27,7 +34,7 @@ class Gamemode(models.Model):
 
 
 class Gamesession(models.Model):
-    gamesessionid = models.CharField(primary_key=True, max_length=10)
+    gamesessionid = models.CharField(primary_key=True, max_length=30)
     starttime = models.DateTimeField(blank=True, null=True)
     endtime = models.DateTimeField(blank=True, null=True)
     gamemodelid = models.ForeignKey(
@@ -44,7 +51,7 @@ class Gamesession(models.Model):
 
 
 class Matchmakingqueue(models.Model):
-    queueid = models.CharField(primary_key=True, max_length=10)
+    queueid = models.CharField(primary_key=True, max_length=32)
     playerid = models.ForeignKey(
         "Player", models.DO_NOTHING, db_column="playerid", blank=True, null=True
     )
@@ -64,12 +71,12 @@ class Matchmakingqueue(models.Model):
 
 
 class Player(models.Model):
-    playerid = models.CharField(primary_key=True, max_length=10, default=uuid.uuid3)
+    playerid = models.CharField(primary_key=True, max_length=30)
     username = models.CharField(max_length=50)
     password = models.CharField(max_length=255)
-    skillrating = models.IntegerField()
-    gamesplayed = models.IntegerField()
-    winrate = models.FloatField()
+    skillrating = models.IntegerField(default=0)
+    gamesplayed = models.IntegerField(default=0)
+    winrate = models.FloatField(default=0)
     serverip = models.ForeignKey(
         "Server", models.DO_NOTHING, db_column="serverip", blank=True, null=True
     )
@@ -117,13 +124,11 @@ class Server(models.Model):
 
 
 class Sessionparticipant(models.Model):
-    sessionid = models.OneToOneField(
-        Gamesession, models.DO_NOTHING, db_column="sessionid", primary_key=True
-    )
+    sessionid = models.ForeignKey(Gamesession, models.DO_NOTHING, db_column="sessionid")
     playerid = models.ForeignKey(
         Player, models.DO_NOTHING, db_column="playerid", blank=True, null=True
     )
-    matchid = models.CharField(max_length=10, blank=True, null=True)
+    matchid = models.CharField(primary_key=True, max_length=255)
 
     class Meta:
         managed = False

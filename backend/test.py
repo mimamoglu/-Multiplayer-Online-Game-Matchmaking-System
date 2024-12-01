@@ -1,12 +1,6 @@
 import requests
 
 BASE_URL = "http://127.0.0.1:8000/api/players"
-START_ID = 1
-END_ID = 100
-
-
-def generate_player_id(index):
-    return f"P{str(index).zfill(4)}"
 
 
 def add_player_to_queue(player_id):
@@ -24,11 +18,7 @@ def add_player_to_queue(player_id):
         )
 
 
-def main():
-    for i in range(START_ID, END_ID + 1):
-        player_id = generate_player_id(i)
+def process_players(player_ids, start_index, stop_index):
+    for i in range(start_index, stop_index + 1):
+        player_id = player_ids[i]
         add_player_to_queue(player_id)
-
-
-if __name__ == "__main__":
-    main()

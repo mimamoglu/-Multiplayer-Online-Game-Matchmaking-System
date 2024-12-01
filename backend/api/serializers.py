@@ -10,6 +10,7 @@ from .models import (
 import bcrypt
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
+import uuid
 
 
 class MatchmakingQueueSerializer(serializers.ModelSerializer):
@@ -26,6 +27,7 @@ class PlayerSerializer(serializers.ModelSerializer):
 
 class PlayerRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    playerid = serializers.UUIDField(read_only=True)
 
     class Meta:
         model = Player
@@ -45,10 +47,7 @@ class PlayerRegistrationSerializer(serializers.ModelSerializer):
             validated_data.pop("password").encode("utf-8"), bcrypt.gensalt()
         ).decode("utf-8")
 
-        validated_data.setdefault("skillrating", 0)
-        validated_data.setdefault("gamesplayed", 0)
-        validated_data.setdefault("winrate", 0.0)
-        validated_data.setdefault("serverip", None)
+        validated_data.setdefault("playerid", str(uuid.uuid4()))
 
         validated_data["password"] = hashed_password
 
