@@ -5,7 +5,6 @@ from django.utils.timezone import now
 from .models import *
 from .serializers import *
 import uuid
-from .serializers import *
 from rest_framework import generics
 from django.utils import timezone
 import random
@@ -14,6 +13,8 @@ from rest_framework import status
 from django.core.management import call_command
 import io
 from django.core.exceptions import ObjectDoesNotExist
+
+from rest_framework.status import HTTP_404_NOT_FOUND
 
 
 class PlayerDetail(APIView):
@@ -147,11 +148,11 @@ class GameSessionView(generics.ListCreateAPIView):
     serializer_class = GameSessionSerializer
 
 
-class GameSessionDetail(generics.RetrieveAPIView):
+class GameSessionDetail(generics.RetrieveUpdateAPIView):
     queryset = Gamesession.objects.all()
     serializer_class = GameSessionDetailSerializer
 
-    def post(self, request, *args, **kwargs):
+    def put(self, request, *args, **kwargs):
         game_id = self.kwargs.get("pk")
         try:
             game = Gamesession.objects.get(gamesessionid=game_id)
@@ -166,6 +167,33 @@ class GameSessionDetail(generics.RetrieveAPIView):
 
         serializer = self.serializer_class(game)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class SessionparticipantByGameSessionView(APIView):
+    def get(self, request, playerid):
+
+        try:
+            session = Sessionparticipant.objects.filter(playerid=playerid).first()
+        except Sessionparticipant.DoesNotExist:
+            return Response(
+                {"detail": "Game session not found."}, status=HTTP_404_NOT_FOUND
+            )
+
+        if not session:
+            return Response(
+                {"detail": "No participants found for this game session."},
+                status=HTTP_404_NOT_FOUND,
+            )
+        sessionid = session.sessionid
+
+        participants = Sessionparticipant.objects.filter(sessionid=sessionid)
+        player_ids = participants.values_list("playerid", flat=True)
+
+        player_ids = participants.values_list("playerid", flat=True)
+
+        response_data = {"game_id": str(sessionid), "players": list(player_ids)}
+
+        return Response(response_data)
 
 
 class MatchmakingView(APIView):

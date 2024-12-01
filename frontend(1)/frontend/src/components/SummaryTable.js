@@ -65,14 +65,20 @@ const styles = {
     borderBottom: "1px solid #2c3e50",
   },
   reportButton: {
-    background: "#e74c3c",
+    backgroundColor: "#e74c3c",
     color: "#ffffff",
-    padding: "0.25rem 0.5rem",
+    padding: "0.5rem 1rem",
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
+    fontSize: "0.9rem",
+    fontWeight: "bold",
     transition: "background 0.3s ease",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)",
   },
+  reportButtonHover: {
+    backgroundColor: "#c0392b",
+  }
 };
 
 export default SummaryTable;

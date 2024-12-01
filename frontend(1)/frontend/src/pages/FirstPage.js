@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import Navbar from '../components/Navbar' // Navbar bileşenini dahil edin
+import Navbar from '../components/Navbar' // Navbar bileÅŸenini dahil edin
 import API_BASE_URL from '../config'
 
 function FirstPage () {
-  const [currentSlide, setCurrentSlide] = useState(0) // Slider kontrolü
+  const [currentSlide, setCurrentSlide] = useState(0) // Slider kontrolÃ¼
   const [data1, setData1] = useState([]) // Players data
   const [data2, setData2] = useState([]) // Blacklist data
   const [data3, setData3] = useState([]) // Game sessions data
@@ -203,7 +203,7 @@ function FirstPage () {
     <>
       <Navbar />
       <div style={styles.container}>
-        <h1>CONTROL CENTER</h1>
+        <h1>DASHBOARD</h1>
         <div style={styles.slider}>
           {slides[currentSlide].button}
           {slides[currentSlide].table}
@@ -216,8 +216,8 @@ function FirstPage () {
                 prev === 0 ? slides.length - 1 : prev - 1
               )
             }
-          >
-            ← Previous
+          > 
+          ← Previous
           </button>
           <button
             style={styles.controlButton}
@@ -301,4 +301,4 @@ const styles = {
   }
 }
 
-export default FirstPage
+export default FirstPage;

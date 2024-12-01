@@ -1,20 +1,21 @@
 import React, { useState } from 'react'
-import { useGlobalDispatch } from '../GlobalState' // Global state'e erişim için import
-import API_BASE_URL from '../config' // API URL'sini config'den alın
-import { useNavigate, Link } from 'react-router-dom' // Link bileşeni eklendi
+import { useGlobalDispatch } from '../GlobalState' // Global state'e eriÅŸim iÃ§in import
+import API_BASE_URL from '../config' // API URL'sini config'den alÄ±n
+import { useNavigate, Link } from 'react-router-dom' // Link bileÅŸeni eklendi
 
 function Login () {
-  const [error, setError] = useState(null) // Hata mesajını tutmak için
-  const dispatch = useGlobalDispatch() // Global state'i güncellemek için dispatch
+  const [error, setError] = useState(null) // Hata mesajÄ±nÄ± tutmak iÃ§in
+  const dispatch = useGlobalDispatch() // Global state'i gÃ¼ncellemek iÃ§in dispatch
   const navigate = useNavigate()
 
   const handleLogin = async e => {
     e.preventDefault()
-    setError(null) // Hata mesajını sıfırla
+    setError(null) // Hata mesajÄ±nÄ± sÄ±fÄ±rla
 
     const formData = new FormData(e.target)
     const username = formData.get('username')
     const password = formData.get('password')
+
 
     try {
       const response = await fetch(`${API_BASE_URL}/login/`, {
@@ -38,7 +39,7 @@ function Login () {
         throw new Error('Invalid response from server.')
       }
     } catch (error) {
-      setError(error.message) // Hata mesajını ayarla
+      setError(error.message) // Hata mesajÄ±nÄ± ayarla
     }
   }
 
@@ -63,7 +64,7 @@ function Login () {
           Login
         </button>
         {error && <p style={styles.error}>{error}</p>}{' '}
-        {/* Hata mesajını göster */}
+        {/* Hata mesajÄ±nÄ± gÃ¶ster */}
       </form>
       {/* Register Link */}
       <p style={styles.registerText}>
@@ -130,4 +131,4 @@ const styles = {
   }
 }
 
-export default Login
+export default Login;

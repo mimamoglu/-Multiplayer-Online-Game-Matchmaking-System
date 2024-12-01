@@ -1,26 +1,29 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import API_BASE_URL from '../config' // API URL'sini config'den alın
+import API_BASE_URL from '../config' // API URL'sini config'den alÄ±n
 
 function Register () {
-  const [error, setError] = useState(null) // Hata mesajını tutmak için
-  const navigate = useNavigate() // Yönlendirme için
+  const [error, setError] = useState(null) // Hata mesajÄ±nÄ± tutmak iÃ§in
+  const navigate = useNavigate() // YÃ¶nlendirme iÃ§in
 
   const handleRegister = async e => {
     e.preventDefault()
-    setError(null) // Hata mesajını sıfırla
+    setError(null) // Hata mesajÄ±nÄ± sÄ±fÄ±rla
 
     const formData = new FormData(e.target)
     const username = formData.get('username')
     const password = formData.get('password')
+    const skillrating = 0;
+    const winrate = 0;
+    const gamesplayed = 0;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/register`, {
+      const response = await fetch(`${API_BASE_URL}/register/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password, skillrating, winrate, gamesplayed })
       })
 
       if (!response.ok) {
@@ -28,14 +31,13 @@ function Register () {
       }
 
       const result = await response.json()
-      if (result.success) {
-        alert('Registration successful! Redirecting to login...')
-        navigate('/') // Login sayfasına yönlendir
+      if (result.message) {
+        navigate('/') // Login sayfasÄ±na yÃ¶nlendir
       } else {
         throw new Error(result.message || 'Unknown error occurred.')
       }
     } catch (error) {
-      setError(error.message) // Hata mesajını ayarla
+      setError(error.message) // Hata mesajÄ±nÄ± ayarla
     }
   }
 
@@ -60,7 +62,7 @@ function Register () {
           Register
         </button>
         {error && <p style={styles.error}>{error}</p>}{' '}
-        {/* Hata mesajını göster */}
+        {/* Hata mesajÄ±nÄ± gÃ¶ster */}
       </form>
     </div>
   )
@@ -111,4 +113,4 @@ const styles = {
   }
 }
 
-export default Register
+export default Register;

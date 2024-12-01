@@ -8,6 +8,7 @@ from .views import (
     PlayerView,
     TestEndpointView,
     MatchmakingView,
+    SessionparticipantByGameSessionView,
 )
 
 urlpatterns = [
@@ -19,4 +20,9 @@ urlpatterns = [
     path("gamesession/<pk>/", GameSessionDetail.as_view(), name="gamesessiondetail"),
     path("matchmaking/", MatchmakingView.as_view(), name="matchmaking"),
     path("test/", TestEndpointView.as_view(), name="test_endpoint"),
+    path(
+        "sessionparticipant/gamesession/<playerid>/",
+        SessionparticipantByGameSessionView.as_view(),
+        name="sessionparticipant-detail",
+    ),
 ]
