@@ -2,9 +2,9 @@
 
 
 
-# Mustafa Berke İmamoğlu 
-# Ahmet Yasin Aydın 
-# Kaan Güneş
+- Mustafa Berke İmamoğlu 
+- Ahmet Yasin Aydın 
+- Kaan Güneş
 
 # Tanım
 
