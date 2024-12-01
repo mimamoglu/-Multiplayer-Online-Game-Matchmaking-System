@@ -1,4 +1,7 @@
 ![images (1)](https://github.com/user-attachments/assets/a2334e0f-17a0-4ce3-80d9-5acd02731626)
+Mustafa Berke İmamoğlu 
+Ahmet Yasin Aydın 
+Kaan Güneş
 
 # Tanım
 
